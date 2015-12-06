@@ -1,0 +1,9 @@
+plugins {
+    id 'application'
+}
+
+mainClassName = 'com.jakubkriz.derrick.example.Example'
+
+dependencies {
+    compile project(':library')
+}

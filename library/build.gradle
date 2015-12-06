@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+group 'com.jakubkriz'
+version '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.assertj:assertj-core:2.2.0'
+}

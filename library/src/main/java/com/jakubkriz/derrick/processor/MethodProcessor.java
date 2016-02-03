@@ -3,7 +3,6 @@ package com.jakubkriz.derrick.processor;
 import com.jakubkriz.derrick.annotation.SourceFrom;
 import com.jakubkriz.derrick.downloader.CodeDownloader;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.jsoup.helper.StringUtil;
 
 import javax.lang.model.element.ExecutableElement;
 import java.io.IOException;

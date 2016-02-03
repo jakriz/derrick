@@ -4,10 +4,6 @@ plugins {
 
 mainClassName = 'com.jakubkriz.derrick.example.Main'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     compile project(':library')
 }

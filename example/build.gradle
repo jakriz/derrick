@@ -2,7 +2,11 @@ plugins {
     id 'application'
 }
 
-mainClassName = 'com.jakubkriz.derrick.example.Example'
+mainClassName = 'com.jakubkriz.derrick.example.Main'
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     compile project(':library')

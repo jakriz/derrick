@@ -5,5 +5,7 @@ plugins {
 mainClassName = 'com.jakubkriz.derrick.example.Main'
 
 dependencies {
+    testCompile 'junit:junit:4.11'
+
     compile project(':library')
 }

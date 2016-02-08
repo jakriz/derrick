@@ -9,7 +9,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface SourceFrom {
 
-    String url();
+    String path() default "";
 
     String selector();
+
+    boolean addReturn() default false;
 }

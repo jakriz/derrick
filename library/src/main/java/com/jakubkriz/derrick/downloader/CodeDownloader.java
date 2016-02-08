@@ -1,29 +1,26 @@
 package com.jakubkriz.derrick.downloader;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
+import org.apache.commons.lang3.StringEscapeUtils;
 
-import java.io.IOException;
+import java.util.Optional;
 
 public class CodeDownloader {
 
     private HttpClient httpClient;
+    private JsoupSelectorExtractor selectorExtractor;
 
-    public CodeDownloader(HttpClient httpClient) {
+    public CodeDownloader(HttpClient httpClient, JsoupSelectorExtractor selectorExtractor) {
         this.httpClient = httpClient;
+        this.selectorExtractor = selectorExtractor;
     }
 
-    public String getMethodCode(String url, String selector) throws IOException {
-        String html = httpClient.getHtml(url);
-        if (html != null) {
-            Document document = Jsoup.parse(html);
-            Elements elements = document.select(selector);
-            if (elements != null) {
-                return elements.html();
-            }
+    public Optional<String> getMethodCode(String baseUrl, String path, String selector) {
+        Optional<String> html = httpClient.getHtml(baseUrl, path);
+        if (html.isPresent()) {
+            Optional<String> extracted = selectorExtractor.extract(selector, html.get());
+            return extracted.map(StringEscapeUtils::unescapeHtml4);
         }
-        return null;
+        return Optional.empty();
     }
 
 }

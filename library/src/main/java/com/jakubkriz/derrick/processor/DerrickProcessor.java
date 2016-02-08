@@ -3,7 +3,13 @@ package com.jakubkriz.derrick.processor;
 import com.jakubkriz.derrick.annotation.DerrickInterface;
 import com.jakubkriz.derrick.annotation.SourceFrom;
 import com.jakubkriz.derrick.downloader.CodeDownloader;
-import com.jakubkriz.derrick.downloader.HttpClient;
+import com.jakubkriz.derrick.downloader.JsoupSelectorExtractor;
+import com.jakubkriz.derrick.downloader.OkhttpHttpClient;
+import com.jakubkriz.derrick.generator.ClassGenerator;
+import com.jakubkriz.derrick.generator.HardcoreClassGenerator;
+import com.jakubkriz.derrick.model.ResolvedInterface;
+import com.jakubkriz.derrick.model.ResolvedMethod;
+import com.jakubkriz.derrick.processor.util.CodeModifier;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -25,9 +31,11 @@ import java.util.stream.Collectors;
 })
 public class DerrickProcessor extends AbstractProcessor {
 
-    private CodeDownloader codeDownloader = new CodeDownloader(new HttpClient());
-    private MethodProcessor methodProcessor = new MethodProcessor(codeDownloader);
-    private ClassGenerator classGenerator = new ClassGenerator();
+    private CodeDownloader codeDownloader = new CodeDownloader(new OkhttpHttpClient(), new JsoupSelectorExtractor());
+    private CodeModifier codeModifier = new CodeModifier();
+    private InterfaceProcessor interfaceProcessor = new InterfaceProcessor();
+    private MethodProcessor methodProcessor = new MethodProcessor(codeDownloader, codeModifier);
+    private ClassGenerator classGenerator;
 
     private Types typeUtils;
     private Elements elementUtils;
@@ -41,35 +49,33 @@ public class DerrickProcessor extends AbstractProcessor {
         elementUtils = processingEnv.getElementUtils();
         filer = processingEnv.getFiler();
         messager = processingEnv.getMessager();
+
+        classGenerator = new HardcoreClassGenerator(filer);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        for (Element classElement : roundEnv.getElementsAnnotatedWith(DerrickInterface.class)) {
-            if (classElement.getKind() != ElementKind.INTERFACE) {
+        for (Element candidateElement : roundEnv.getElementsAnnotatedWith(DerrickInterface.class)) {
+            if (candidateElement.getKind() != ElementKind.INTERFACE) {
                 error("Only interfaces can be annotated with @DerrickInterface annotation.");
                 return false;
             }
+            TypeElement interfaceElement = (TypeElement) candidateElement;
 
-            List<MethodDefinition> methods = classElement.getEnclosedElements()
+            ResolvedInterface resolvedInterface = interfaceProcessor.process(interfaceElement);
+
+            List<ResolvedMethod> methods = interfaceElement.getEnclosedElements()
                     .stream()
                     .filter(e -> e.getKind() == ElementKind.METHOD)
                     .filter(e -> e.getAnnotation(SourceFrom.class) != null)
                     .map(e -> (ExecutableElement) e)
-                    .map(e -> {
-                        try {
-                            return methodProcessor.process(e);
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                            return null;
-                        }
-                    })
+                    .map(e -> methodProcessor.process(interfaceElement, e))
                     .collect(Collectors.toList());
 
             try {
-                classGenerator.generate((TypeElement) classElement, methods, filer);
+                classGenerator.generate(resolvedInterface, methods);
             } catch (IOException e) {
-                e.printStackTrace();
+                error("Implementation file couldn't be generated due to: " + e.getMessage());
                 return true;
             }
         }
@@ -84,5 +90,9 @@ public class DerrickProcessor extends AbstractProcessor {
 
     private void error(String message) {
         messager.printMessage(Diagnostic.Kind.ERROR, message);
+    }
+
+    private void warning(String message) {
+        messager.printMessage(Diagnostic.Kind.WARNING, message);
     }
 }

@@ -4,16 +4,16 @@ import com.jakubkriz.derrick.Derrick;
 
 public class Main {
 
-    private ExternalMethods externalMethods = Derrick.get(ExternalMethods.class);
+    private DocsMethods docsMethods = Derrick.get(DocsMethods.class);
 
-    public void myTest() {
-        System.out.println("We are invoking an external method myMethod()");
-        externalMethods.myMethod();
+    public void run() {
+        System.out.println("We are invoking a method taken from the docs: add()");
+        int addResult = docsMethods.add();
+        System.out.println(addResult);
     }
 
     public static void main(String... args) {
-        System.out.println("We are running myTest()");
-        new Main().myTest();
+        new Main().run();
     }
 
 }

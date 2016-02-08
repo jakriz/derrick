@@ -1,12 +1,12 @@
 package com.jakubkriz.derrick;
 
-import java.lang.reflect.Constructor;
+import com.jakubkriz.derrick.processor.Namer;
 
 public class Derrick {
 
     public static <T> T get(Class<T> klass) {
         try {
-            Class<?> derrickKlass = Class.forName(klass.getPackage().getName() + "." + klass.getSimpleName() + "DerrickImpl");
+            Class<?> derrickKlass = Class.forName(Namer.generatedQualifiedName(klass));
             return (T) derrickKlass.newInstance();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
             e.printStackTrace();

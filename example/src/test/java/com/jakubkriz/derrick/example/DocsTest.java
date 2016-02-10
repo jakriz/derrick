@@ -9,8 +9,10 @@ public class DocsTest {
 
     private DocsMethods docsMethods = Derrick.get(DocsMethods.class);
 
+    private MathWizard mathWizard = new MathWizard();
+
     @Test
     public void testAdd() throws Exception {
-        assertEquals(docsMethods.add(), 6);
+        assertEquals(docsMethods.add(mathWizard), 6);
     }
 }

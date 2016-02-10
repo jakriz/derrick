@@ -7,8 +7,8 @@ import com.jakubkriz.derrick.downloader.JsoupSelectorExtractor;
 import com.jakubkriz.derrick.downloader.OkhttpHttpClient;
 import com.jakubkriz.derrick.generator.ClassGenerator;
 import com.jakubkriz.derrick.generator.HardcoreClassGenerator;
-import com.jakubkriz.derrick.model.ResolvedInterface;
-import com.jakubkriz.derrick.model.ResolvedMethod;
+import com.jakubkriz.derrick.model.ProcessedInterface;
+import com.jakubkriz.derrick.model.ProcessedMethod;
 import com.jakubkriz.derrick.processor.util.CodeModifier;
 
 import javax.annotation.processing.*;
@@ -22,8 +22,10 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SupportedAnnotationTypes({
         "com.jakubkriz.derrick.annotation.DerrickInterface",
@@ -62,9 +64,9 @@ public class DerrickProcessor extends AbstractProcessor {
             }
             TypeElement interfaceElement = (TypeElement) candidateElement;
 
-            ResolvedInterface resolvedInterface = interfaceProcessor.process(interfaceElement);
+            ProcessedInterface processedInterface = interfaceProcessor.process(interfaceElement);
 
-            List<ResolvedMethod> methods = interfaceElement.getEnclosedElements()
+            List<Optional<ProcessedMethod>> methodsOptionals = interfaceElement.getEnclosedElements()
                     .stream()
                     .filter(e -> e.getKind() == ElementKind.METHOD)
                     .filter(e -> e.getAnnotation(SourceFrom.class) != null)
@@ -72,11 +74,18 @@ public class DerrickProcessor extends AbstractProcessor {
                     .map(e -> methodProcessor.process(interfaceElement, e))
                     .collect(Collectors.toList());
 
-            try {
-                classGenerator.generate(resolvedInterface, methods);
-            } catch (IOException e) {
-                error("Implementation file couldn't be generated due to: " + e.getMessage());
-                return true;
+            if (methodsOptionals.stream().allMatch(Optional::isPresent)) {
+                List<ProcessedMethod> methods = methodsOptionals.stream()
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
+                try {
+                    classGenerator.generate(processedInterface, methods);
+                } catch (IOException e) {
+                    error("Implementation file couldn't be generated due to: " + e.getMessage());
+                    return true;
+                }
+            } else {
+                error("Some methods could not be processed"); // TODO better error messages with reasons and stuff
             }
         }
 

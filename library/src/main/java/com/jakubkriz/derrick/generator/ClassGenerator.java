@@ -1,12 +1,12 @@
 package com.jakubkriz.derrick.generator;
 
-import com.jakubkriz.derrick.model.ResolvedInterface;
-import com.jakubkriz.derrick.model.ResolvedMethod;
+import com.jakubkriz.derrick.model.ProcessedInterface;
+import com.jakubkriz.derrick.model.ProcessedMethod;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface ClassGenerator {
 
-    void generate(ResolvedInterface resolvedInterface, List<ResolvedMethod> resolvedMethods) throws IOException;
+    void generate(ProcessedInterface processedInterface, List<ProcessedMethod> processedMethods) throws IOException;
 }

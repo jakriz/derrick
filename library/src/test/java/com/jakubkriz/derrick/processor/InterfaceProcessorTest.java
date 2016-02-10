@@ -1,7 +1,7 @@
 package com.jakubkriz.derrick.processor;
 
 import com.jakubkriz.derrick.annotation.DerrickInterface;
-import com.jakubkriz.derrick.model.ResolvedInterface;
+import com.jakubkriz.derrick.model.ProcessedInterface;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -38,7 +38,7 @@ public class InterfaceProcessorTest {
         when(interfaceElement.getQualifiedName().toString()).thenReturn("com.a.b.Foo");
         when(derrickInterface.imports()).thenReturn(new String[]{"a", "b"});
 
-        ResolvedInterface result = victim.process(interfaceElement);
+        ProcessedInterface result = victim.process(interfaceElement);
 
         assertThat(result.getOriginalSimpleName()).isEqualTo("Foo");
         assertThat(result.getGeneratedSimpleName()).isEqualTo("FooDerrickImpl");

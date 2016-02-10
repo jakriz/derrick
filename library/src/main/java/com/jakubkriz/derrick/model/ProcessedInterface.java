@@ -2,7 +2,7 @@ package com.jakubkriz.derrick.model;
 
 import java.util.Set;
 
-public class ResolvedInterface {
+public class ProcessedInterface {
 
     private String generatedPackage;
     private String originalSimpleName;

@@ -1,7 +1,8 @@
 package com.jakubkriz.derrick.generator;
 
-import com.jakubkriz.derrick.model.ResolvedInterface;
-import com.jakubkriz.derrick.model.ResolvedMethod;
+import com.jakubkriz.derrick.model.Argument;
+import com.jakubkriz.derrick.model.ProcessedInterface;
+import com.jakubkriz.derrick.model.ProcessedMethod;
 
 import javax.annotation.processing.Filer;
 import javax.tools.JavaFileObject;
@@ -20,18 +21,18 @@ public class HardcoreClassGenerator implements ClassGenerator {
     }
 
     @Override
-    public void generate(ResolvedInterface resolvedInterface, List<ResolvedMethod> resolvedMethods) throws IOException {
-        String qualifiedName = resolvedInterface.getGeneratedPackage() + "." + resolvedInterface.getGeneratedSimpleName();
+    public void generate(ProcessedInterface processedInterface, List<ProcessedMethod> processedMethods) throws IOException {
+        String qualifiedName = processedInterface.getGeneratedPackage() + "." + processedInterface.getGeneratedSimpleName();
         JavaFileObject fileObject = filer.createSourceFile(qualifiedName);
         Writer writer = fileObject.openWriter();
 
         writer.append("package ")
-                .append(resolvedInterface.getGeneratedPackage())
+                .append(processedInterface.getGeneratedPackage())
                 .append(";")
                 .append(NL)
                 .append(NL);
 
-        for (String importStatement : resolvedInterface.getImports()) {
+        for (String importStatement : processedInterface.getImports()) {
             writer.append("import ")
                     .append(importStatement)
                     .append(";")
@@ -40,13 +41,13 @@ public class HardcoreClassGenerator implements ClassGenerator {
 
         writer.append(NL)
                 .append("public class ")
-                .append(resolvedInterface.getGeneratedSimpleName())
+                .append(processedInterface.getGeneratedSimpleName())
                 .append(" implements ")
-                .append(resolvedInterface.getOriginalSimpleName())
+                .append(processedInterface.getOriginalSimpleName())
                 .append(" {")
                 .append(NL);
 
-        for (ResolvedMethod method : resolvedMethods) {
+        for (ProcessedMethod method : processedMethods) {
             addMethod(writer, method);
         }
 
@@ -56,7 +57,7 @@ public class HardcoreClassGenerator implements ClassGenerator {
         writer.close();
     }
 
-    private void addMethod(Writer writer, ResolvedMethod method) throws IOException {
+    private void addMethod(Writer writer, ProcessedMethod method) throws IOException {
         writer.append("public ")
                 .append(method.getReturnType())
                 .append(" ")
@@ -72,7 +73,7 @@ public class HardcoreClassGenerator implements ClassGenerator {
                 .append(NL);
     }
 
-    private String getAsArgumentsString(List<ResolvedMethod.Argument> arguments) {
+    private String getAsArgumentsString(List<Argument> arguments) {
         return arguments.stream()
                 .map(argument -> argument.getName() + " " + argument.getType())
                 .collect(Collectors.joining(", "));

@@ -3,10 +3,12 @@ package com.jakubkriz.derrick.processor;
 import com.jakubkriz.derrick.annotation.DerrickInterface;
 import com.jakubkriz.derrick.annotation.SourceFrom;
 import com.jakubkriz.derrick.downloader.CodeDownloader;
-import com.jakubkriz.derrick.model.ResolvedMethod;
+import com.jakubkriz.derrick.model.ProcessedMethod;
 import com.jakubkriz.derrick.processor.util.CodeModifier;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -14,6 +16,12 @@ import org.mockito.MockitoAnnotations;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -22,6 +30,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(Parameterized.class)
 public class MethodProcessorTest {
     private static final String CODE_SAMPLE = "someCode();";
 
@@ -45,6 +54,16 @@ public class MethodProcessorTest {
 
     private MethodProcessor victim;
 
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {true}, {false}
+        });
+    }
+
+    @Parameterized.Parameter
+    public boolean addReturn;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -53,31 +72,29 @@ public class MethodProcessorTest {
     }
 
     @Test
-    public void testProcess_addReturnTrue() throws Exception {
+    public void testProcess_noCodeReturned() throws Exception {
         givenElementsHaveAnnotations();
         givenElementsReturnValues();
-        givenAnnotationsReturnValues(true);
-        givenCodeDownloaderReturnsCode();
-        givenCodeModifierReturnsCode();
+        givenAnnotationsReturnValues(addReturn);
+        givenCodeDownloaderDoesNotReturnCode();
 
-        ResolvedMethod result = victim.process(interfaceElement, methodElement);
+        Optional<ProcessedMethod> result = victim.process(interfaceElement, methodElement);
 
-        thenCorrectCodeModifiersAreCalled(true);
-        thenCorrectResolvedMethodIsReturned(result);
+        thenEmptyResultIsReturned(result);
     }
 
     @Test
-    public void testProcess_addReturnFalse() throws Exception {
+    public void testProcess_codeReturned() throws Exception {
         givenElementsHaveAnnotations();
         givenElementsReturnValues();
-        givenAnnotationsReturnValues(false);
+        givenAnnotationsReturnValues(addReturn);
         givenCodeDownloaderReturnsCode();
         givenCodeModifierReturnsCode();
 
-        ResolvedMethod result = victim.process(interfaceElement, methodElement);
+        Optional<ProcessedMethod> result = victim.process(interfaceElement, methodElement);
 
-        thenCorrectCodeModifiersAreCalled(false);
-        thenCorrectResolvedMethodIsReturned(result);
+        thenCorrectCodeModifiersAreCalled(addReturn);
+        thenResolvedMethodHasCorrectData(result.get());
     }
 
     private void givenElementsHaveAnnotations() {
@@ -86,7 +103,10 @@ public class MethodProcessorTest {
     }
 
     private void givenElementsReturnValues() {
-        when(methodElement.getSimpleName().toString()).thenReturn("foo()");
+        when(methodElement.getSimpleName().toString()).thenReturn("foo");
+        when(methodElement.getReturnType().toString()).thenReturn("String");
+
+        when(methodElement.getParameters()).thenReturn(Collections.emptyList());
     }
 
     private void givenAnnotationsReturnValues(boolean addReturn) {
@@ -94,6 +114,10 @@ public class MethodProcessorTest {
         when(sourceFrom.path()).thenReturn("abc");
         when(sourceFrom.selector()).thenReturn(".xyz");
         when(sourceFrom.addReturn()).thenReturn(addReturn);
+    }
+
+    private void givenCodeDownloaderDoesNotReturnCode() {
+        when(codeDownloader.getMethodCode(eq("http://www.example.com"), eq("abc"), eq(".xyz"))).thenReturn(empty());
     }
 
     private void givenCodeDownloaderReturnsCode() {
@@ -105,6 +129,10 @@ public class MethodProcessorTest {
         when(codeModifier.changeToAddReturnOnLastLine(anyString())).thenReturn(CODE_SAMPLE);
     }
 
+    private void thenEmptyResultIsReturned(Optional<ProcessedMethod> result) {
+        assertThat(result.isPresent()).isFalse();
+    }
+
     private void thenCorrectCodeModifiersAreCalled(boolean addReturn) {
         verify(codeModifier).removeTopLevelMethod(eq(CODE_SAMPLE));
         if (addReturn) {
@@ -114,8 +142,10 @@ public class MethodProcessorTest {
         }
     }
 
-    private void thenCorrectResolvedMethodIsReturned(ResolvedMethod result) {
-        assertThat(result.getName()).isEqualTo("foo()");
+    private void thenResolvedMethodHasCorrectData(ProcessedMethod result) {
+        assertThat(result.getName()).isEqualTo("foo");
+        assertThat(result.getReturnType()).isEqualTo("String");
+        assertThat(result.getArguments()).isEmpty();
         assertThat(result.getCode()).isEqualTo(CODE_SAMPLE);
     }
 }

@@ -13,7 +13,7 @@ Say you have a library which implements some math operations. Your wiki may look
 
 >To add a few numbers together you can use MathWizard.add() method, for example
 >
->`mathWizard.add(1, 2, 3)`
+>`mathWizard.add(1, 2, 3);`
 >
 >returns the sum of these numbers, in this case 6.
 
@@ -26,7 +26,7 @@ To make sure this part of the documentation is correct you:
 public interface DocsMethods {
 
     @SourceFrom(path = "tutorial.html", selector = ".sample-add", addReturn = true)
-    void add();
+    void add(MathWizard mathWizard);
 }
 ```
 3. create a test which may look like:
@@ -45,7 +45,7 @@ class DocsTest {
 
 That's all. Every time you build, Derrick will give you an up-to-date implementation of your interface by downloading the code from your docs, as long as the docs are accessible on the internet of course.
 
-You can add as many methods to your interface and create as many interfaces as you like. You can also pass in parameters to the loaded methods or leave them out.
+You can add as many methods to your interface and create as many interfaces as you like. You can also pass in parameters, like we passed in the `MathWizard` object in the sample, or leave them out.
 
 ## Annotations and Options
 This section describes the annotations you have to use.
@@ -55,13 +55,13 @@ This section describes the annotations you have to use.
 
 You need to specify a `url` parameter, which contains the base url for the paths to the code sample pages.
 
-You will probably also want to specify an `imports` parameter, which specifies which Java imports are needed to run the code from the samples. Since this library is targeted at testing, not production builds, you can simply specify your whole package and the whole others.
+You will probably also want to specify an `imports` parameter, which specifies which Java imports are needed to run the code from the samples. Since this library is targeted at testing, not production builds, you can simply specify whole packages with wildcards.
 
 ### @SourceFrom
 `@SourceFrom` marks the interface method to be filled in with downloaded code by Derrick.
 
 You need to specify a `path` to the page (which is embedded to the base url from the class annotation) and a `selector`.
 
-The `selector` is a [CSS selector](http://www.w3schools.com/cssref/css_selectors.asp) which identifies the block with the code to be downloaded. We internally use the [Jsoup HTML parser](http://jsoup.org/) to extract the element.
+The `selector` is a [CSS selector](http://www.w3schools.com/cssref/css_selectors.asp) which identifies the block with the code to be downloaded. Internally we use the [Jsoup HTML parser](http://jsoup.org/) to extract the element.
 
 The methods annotated with this annotation can also have parameters passed in but it is up to you to make sure they work with your code.

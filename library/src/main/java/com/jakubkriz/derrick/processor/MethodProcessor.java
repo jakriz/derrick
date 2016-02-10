@@ -3,14 +3,14 @@ package com.jakubkriz.derrick.processor;
 import com.jakubkriz.derrick.annotation.DerrickInterface;
 import com.jakubkriz.derrick.annotation.SourceFrom;
 import com.jakubkriz.derrick.downloader.CodeDownloader;
-import com.jakubkriz.derrick.model.ResolvedMethod;
+import com.jakubkriz.derrick.model.Argument;
+import com.jakubkriz.derrick.model.ProcessedMethod;
 import com.jakubkriz.derrick.processor.util.CodeModifier;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MethodProcessor {
 
@@ -22,22 +22,32 @@ public class MethodProcessor {
         this.codeModifier = codeModifier;
     }
 
-    public ResolvedMethod process(TypeElement interfaceElement, ExecutableElement methodElement) {
+    public Optional<ProcessedMethod> process(TypeElement interfaceElement, ExecutableElement methodElement) {
         DerrickInterface interfaceAnnotation = interfaceElement.getAnnotation(DerrickInterface.class);
         SourceFrom methodAnnotation = methodElement.getAnnotation(SourceFrom.class);
 
         Optional<String> code = codeDownloader.getMethodCode(interfaceAnnotation.baseUrl(), methodAnnotation.path(), methodAnnotation.selector());
-        String modifiedCode = codeModifier.removeTopLevelMethod(code.get());
-        if (methodAnnotation.addReturn()) {
-            modifiedCode = codeModifier.changeToAddReturnOnLastLine(modifiedCode);
+        if (code.isPresent()) {
+            String modifiedCode = codeModifier.removeTopLevelMethod(code.get());
+            if (methodAnnotation.addReturn()) {
+                modifiedCode = codeModifier.changeToAddReturnOnLastLine(modifiedCode);
+            }
+
+            ProcessedMethod processedMethod = new ProcessedMethod();
+            processedMethod.setName(methodElement.getSimpleName().toString());
+            processedMethod.setArguments(getArgumentsList(methodElement));
+            processedMethod.setReturnType(methodElement.getReturnType().toString());
+            processedMethod.setCode(modifiedCode);
+
+            return Optional.of(processedMethod);
+        } else {
+            return Optional.empty();
         }
+    }
 
-        ResolvedMethod resolvedMethod = new ResolvedMethod();
-        resolvedMethod.setName(methodElement.getSimpleName().toString());
-        resolvedMethod.setArguments(Collections.emptyList());
-        resolvedMethod.setReturnType("int");
-        resolvedMethod.setCode(modifiedCode);
-
-        return resolvedMethod;
+    private List<Argument> getArgumentsList(ExecutableElement methodElement) {
+        return methodElement.getParameters().stream()
+                .map(parameter -> new Argument(parameter.getSimpleName().toString(), parameter.asType().toString()))
+                .collect(Collectors.toList());
     }
 }

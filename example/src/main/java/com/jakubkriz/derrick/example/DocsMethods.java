@@ -7,6 +7,6 @@ import com.jakubkriz.derrick.annotation.SourceFrom;
 public interface DocsMethods {
 
     @SourceFrom(path = "tutorial.html", selector = ".sample-add", addReturn = true)
-    int add();
+    int add(MathWizard mathWizard);
 
 }

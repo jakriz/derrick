@@ -8,7 +8,7 @@ public class Main {
 
     public void run() {
         System.out.println("We are invoking a method taken from the docs: add()");
-        int addResult = docsMethods.add();
+        int addResult = docsMethods.add(new MathWizard());
         System.out.println(addResult);
     }
 

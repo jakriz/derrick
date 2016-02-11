@@ -1,4 +1,3 @@
 rootProject.name = 'derrick'
-include 'library'
+include 'core'
 include 'example'
-

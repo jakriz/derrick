@@ -2,10 +2,10 @@ plugins {
     id 'application'
 }
 
-mainClassName = 'com.jakubkriz.derrick.example.Main'
+mainClassName = 'io.github.jakriz.derrick.example.Main'
 
 dependencies {
     testCompile 'junit:junit:4.11'
 
-    compile project(':library')
+    compile project(':core')
 }

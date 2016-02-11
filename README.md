@@ -1,5 +1,5 @@
 # Derrick
-Derrick, the documentation inspector, enables you to test your high level Java documentation and tutorials. Make sure that the code samples you provide to your integrators are always correct and up-to-date.
+Derrick, the documentation inspector, enables you to test your high level Java documentation and tutorials. Make sure that the code samples you provide to your integrators are always correct and up-to-date!
 
 ## Motivation
 If you have a library which you provide to your users, you need to document its usage. This is usually done through a low level JavaDoc documenting each class, interface and method, but also through a higher level documentation or tutorials in which you describe the typical usage of your product with code samples along the way.
@@ -22,7 +22,7 @@ To make sure this part of the documentation is correct you:
 1. make sure that you can identify the code sample block with a CSS selector,
 2. create an interface which references the code in your documentation
 ```java
-@DerrickInterface(url = "http://mathwizard.io", imports = {"io.mathwizard.*"})
+@DerrickInterface(baseUrl = "http://mathwizard.io", imports = {"io.mathwizard.*"})
 public interface DocsMethods {
 
     @SourceFrom(path = "tutorial.html", selector = ".sample-add", addReturn = true)
@@ -53,7 +53,7 @@ This section describes the annotations you have to use.
 ### @DerrickInterface
 `@DerrickInterface` marks the interface to be processed by Derrick.
 
-You need to specify a `url` parameter, which contains the base url for the paths to the code sample pages.
+You need to specify a `baseUrl` parameter, which contains the base url for the paths to the code sample pages.
 
 You will probably also want to specify an `imports` parameter, which specifies which Java imports are needed to run the code from the samples. Since this library is targeted at testing, not production builds, you can simply specify whole packages with wildcards.
 

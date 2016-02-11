@@ -1,4 +1,4 @@
-group 'com.jakubkriz'
+group 'io.github.jakriz'
 version '0.1'
 
 allprojects {

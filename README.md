@@ -65,3 +65,11 @@ You need to specify a `path` to the page (which is embedded to the base url from
 The `selector` is a [CSS selector](http://www.w3schools.com/cssref/css_selectors.asp) which identifies the block with the code to be downloaded. Internally we use the [Jsoup HTML parser](http://jsoup.org/) to extract the element.
 
 The methods annotated with this annotation can also have parameters passed in but it is up to you to make sure they work with your code.
+
+## Run the Example
+
+1. Clone the repo
+2. Run an HTTP server to make the example tutorial available "online", for example using the [http-server](https://github.com/indexzero/http-server):
+  1. Install the npm package: `npm install http-server -g`
+  2. Run the server: `cd example/web ; http-server`
+3. Run the example project `./gradlew example:run` or the example tests `./gradlew example:test`

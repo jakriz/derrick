@@ -13,7 +13,7 @@ Say you have a library which implements some math operations. Your wiki may look
 
 >To add a few numbers together you can use MathWizard.add() method, for example
 >
->`mathWizard.add(1, 2, 3);`
+> <code id="sample-math-wizard-add">mathWizard.add(1, 2, 3);</code>
 >
 >returns the sum of these numbers, in this case 6.
 
@@ -25,7 +25,7 @@ To make sure this part of the documentation is correct you:
 @DerrickInterface(baseUrl = "http://mathwizard.io", imports = {"io.mathwizard.*"})
 public interface DocsMethods {
 
-    @SourceFrom(path = "tutorial.html", selector = ".sample-add", addReturn = true)
+    @SourceFrom(path = "tutorial.html", selector = "#sample-add", addReturn = true)
     void add(MathWizard mathWizard);
 }
 ```
@@ -68,8 +68,7 @@ The methods annotated with this annotation can also have parameters passed in bu
 
 ## Run the Included Example
 
+The included example tests this very tutorial. The code is taken from the sample usage section, `MathWizard.add()`.
+
 1. Clone the repo
-2. Run an HTTP server to make the example tutorial available "online", for example using the [http-server](https://github.com/indexzero/http-server):
-  1. Install the npm package: `npm install http-server -g`
-  2. Run the server: `cd example/web ; http-server`
-3. Run the example project `./gradlew example:run` or the example tests `./gradlew example:test`
+2. Run the example project `./gradlew example:run` or the example tests `./gradlew example:test`.

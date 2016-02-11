@@ -1,4 +1,5 @@
 # Derrick
+
 Derrick, the documentation inspector, enables you to test your high level Java documentation and tutorials. Make sure that the code samples you provide to your integrators are always correct and up-to-date!
 
 ## Motivation
@@ -72,3 +73,7 @@ The included example tests this very tutorial. The code is taken from the sample
 
 1. Clone the repo
 2. Run the example project `./gradlew example:run` or the example tests `./gradlew example:test`.
+
+## Code Status
+
+![Build Status](https://travis-ci.org/jakriz/derrick.svg?branch=master)

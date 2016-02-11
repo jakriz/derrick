@@ -66,7 +66,7 @@ The `selector` is a [CSS selector](http://www.w3schools.com/cssref/css_selectors
 
 The methods annotated with this annotation can also have parameters passed in but it is up to you to make sure they work with your code.
 
-## Run the Example
+## Run the Included Example
 
 1. Clone the repo
 2. Run an HTTP server to make the example tutorial available "online", for example using the [http-server](https://github.com/indexzero/http-server):

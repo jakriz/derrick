@@ -75,7 +75,7 @@ public class HardcoreClassGenerator implements ClassGenerator {
 
     private String getAsArgumentsString(List<Argument> arguments) {
         return arguments.stream()
-                .map(argument -> argument.getName() + " " + argument.getType())
+                .map(argument -> String.join(" ", argument.getType(), argument.getName()))
                 .collect(Collectors.joining(", "));
     }
 

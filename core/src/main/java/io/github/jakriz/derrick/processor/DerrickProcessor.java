@@ -93,14 +93,11 @@ public class DerrickProcessor extends AbstractProcessor {
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.latestSupported();
+        return SourceVersion.RELEASE_7;
     }
 
     private void error(String message) {
         messager.printMessage(Diagnostic.Kind.ERROR, message);
     }
 
-    private void warning(String message) {
-        messager.printMessage(Diagnostic.Kind.WARNING, message);
-    }
 }

@@ -2,6 +2,8 @@ package io.github.jakriz.derrick.downloader;
 
 public final class UrlHelper {
 
+    private UrlHelper() { }
+
     public static String makeFromUrlAndPath(String url, String path) {
         if (url == null) {
             throw new IllegalArgumentException("Url must not be null");

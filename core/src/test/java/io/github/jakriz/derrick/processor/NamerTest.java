@@ -1,4 +1,4 @@
-package io.github.jakriz.derrick.generator;
+package io.github.jakriz.derrick.processor;
 
 import io.github.jakriz.derrick.processor.Namer;
 import org.junit.Before;
@@ -42,6 +42,6 @@ public class NamerTest {
 
     @Test
     public void testGeneratedQualifiedName_Class() throws Exception {
-        assertThat(Namer.generatedQualifiedName(this.getClass())).isEqualTo("io.github.jakriz.derrick.generator.NamerTestDerrickImpl");
+        assertThat(Namer.generatedQualifiedName(this.getClass())).isEqualTo("io.github.jakriz.derrick.processor.NamerTestDerrickImpl");
     }
 }

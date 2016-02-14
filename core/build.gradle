@@ -1,7 +1,9 @@
 plugins {
     id 'java'
     id 'idea'
+    id 'jacoco'
 }
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -12,8 +14,10 @@ dependencies {
     testCompile 'junit:junit:4.11'
     testCompile 'org.assertj:assertj-core:3.3.0'
     testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'com.github.tomakehurst:wiremock:1.57'
+    testCompile 'commons-io:commons-io:2.4'
 
-    compile 'com.squareup.okhttp:okhttp:2.6.0'
-    compile 'org.jsoup:jsoup:1.7.2'
+    compile 'com.squareup.okhttp3:okhttp:3.1.2'
+    compile 'org.jsoup:jsoup:1.8.3'
     compile 'org.apache.commons:commons-lang3:3.4'
 }

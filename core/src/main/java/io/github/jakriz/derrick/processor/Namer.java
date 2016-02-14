@@ -5,6 +5,8 @@ import javax.lang.model.element.TypeElement;
 public final class Namer {
     private static final String GENERATED_SUFFIX = "DerrickImpl";
 
+    private Namer() { }
+
     public static String generatedClassName(TypeElement element) {
         return element.getSimpleName().toString() + GENERATED_SUFFIX;
     }
@@ -19,7 +21,7 @@ public final class Namer {
     }
 
     public static String generatedQualifiedName(Class klass) {
-        return klass.getPackage().getName() + "." + klass.getSimpleName() + GENERATED_SUFFIX;
+        return klass.getCanonicalName() + GENERATED_SUFFIX;
     }
 
 }

@@ -9,8 +9,7 @@ public class Derrick {
             Class<?> derrickKlass = Class.forName(Namer.generatedQualifiedName(klass));
             return (T) derrickKlass.newInstance();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 }

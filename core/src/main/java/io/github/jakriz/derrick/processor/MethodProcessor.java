@@ -47,7 +47,7 @@ public class MethodProcessor {
 
     private List<Argument> getArgumentsList(ExecutableElement methodElement) {
         return methodElement.getParameters().stream()
-                .map(parameter -> new Argument(parameter.getSimpleName().toString(), parameter.asType().toString()))
+                .map(parameter -> new Argument(parameter.asType().toString(), parameter.getSimpleName().toString()))
                 .collect(Collectors.toList());
     }
 }

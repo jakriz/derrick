@@ -11,7 +11,12 @@ public class JsoupSelectorExtractor implements SelectorExtractor {
     public Optional<String> extract(String cssSelector, String html) {
         Document document = Jsoup.parse(html);
         Elements elements = document.select(cssSelector);
-        return (elements != null ? Optional.of(elements.html()) : Optional.empty());
+
+        if (elements != null && !elements.isEmpty()) {
+            return Optional.of(elements.html());
+        } else {
+            return Optional.empty();
+        }
     }
 
 }

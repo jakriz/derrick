@@ -4,12 +4,19 @@ plugins {
     id 'jacoco'
 }
 
+repositories {
+    mavenCentral()
+}
+
 sourceCompatibility = 1.8
 
 check.finalizedBy(jacocoTestReport)
 
-repositories {
-    mavenCentral()
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled true
+    }
 }
 
 dependencies {

@@ -76,4 +76,6 @@ The included example tests this very tutorial. The code is taken from the sample
 
 ## Code Status
 
-![Build Status](https://travis-ci.org/jakriz/derrick.svg?branch=master)
+[![Build Status](https://travis-ci.org/jakriz/derrick.svg?branch=master)](https://travis-ci.org/jakriz/derrick)
+
+[![codecov.io](https://codecov.io/github/jakriz/derrick.svg?branch=master)](https://codecov.io/github/jakriz/derrick.svg?branch=master)

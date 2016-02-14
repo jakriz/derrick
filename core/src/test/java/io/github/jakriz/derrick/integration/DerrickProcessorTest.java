@@ -134,7 +134,7 @@ public class DerrickProcessorTest {
 
         victim.process(null, roundEnvironment);
 
-        verify(getRequestedFor(urlMatching("/sampleTutorial.html")));
+        verify(getRequestedFor(urlMatching("/sampleTutorial")));
         thenErrorHappens();
     }
 
@@ -142,11 +142,11 @@ public class DerrickProcessorTest {
     public void testProcess_correctMethodAnnotation_downloads() throws Exception {
         givenRoundEnvironmentReturnsInterfaceAnnotation();
         givenInterfaceReturnsCorrectMethodAnnotation();
-        givenCodeDownloads("sampleTutorial.html");
+        givenCodeDownloads("sampleTutorial", "sampleTutorial.html");
 
         victim.process(null, roundEnvironment);
 
-        verify(getRequestedFor(urlMatching("/sampleTutorial.html")));
+        verify(getRequestedFor(urlMatching("/sampleTutorial")));
         thenImplementationClassCreated("SampleTutorialImplementation.java");
     }
 
@@ -154,11 +154,11 @@ public class DerrickProcessorTest {
     public void testProcess_correctMethodAnnotation_downloadsWrong() throws Exception {
         givenRoundEnvironmentReturnsInterfaceAnnotation();
         givenInterfaceReturnsCorrectMethodAnnotation();
-        givenCodeDownloads("sampleTutorialWrongClass.html");
+        givenCodeDownloads("sampleTutorial", "sampleTutorialWrongClass.html");
 
         victim.process(null, roundEnvironment);
 
-        verify(getRequestedFor(urlMatching("/sampleTutorial.html")));
+        verify(getRequestedFor(urlMatching("/sampleTutorial")));
         thenErrorHappens();
     }
 
@@ -201,9 +201,9 @@ public class DerrickProcessorTest {
         when(filer.createSourceFile(any(CharSequence.class)).openWriter()).thenThrow(new IOException());
     }
 
-    private void givenCodeDownloads(String fileName) throws Exception {
+    private void givenCodeDownloads(String path, String fileName) throws Exception {
         String fileContent = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("fixtures/"+fileName));
-        stubFor(get(urlMatching("/"+fileName))
+        stubFor(get(urlMatching("/"+path))
                 .willReturn(aResponse().withBody(fileContent)));
     }
 
@@ -244,7 +244,7 @@ public class DerrickProcessorTest {
 
         @Override
         public String path() {
-            return "sampleTutorial.html";
+            return "sampleTutorial";
         }
 
         @Override

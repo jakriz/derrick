@@ -22,27 +22,27 @@ To make sure this part of the documentation is correct you:
 
 1. make sure that you can identify the code sample block with a CSS selector,
 2. create an interface which references the code in your documentation
-```java
-@DerrickInterface(baseUrl = "http://mathwizard.io", imports = {"io.mathwizard.*"})
-public interface DocsMethods {
-
-    @SourceFrom(path = "tutorial.html", selector = "#sample-add", addReturn = true)
-    void add(MathWizard mathWizard);
-}
-```
-3. create a test which may look like:
-```java
-class DocsTest {
-    private DocsMethods docsMethods = Derrick.get(DocsMethods.class);
-
-    private MathWizard mathWizard = new MathWizard();
-
-    @Test
-    public void testAdd() {
-        assertEquals(docsMethods.add(mathWizard), 6);
+    ```java
+    @DerrickInterface(baseUrl = "http://mathwizard.io", imports = {"io.mathwizard.*"})
+    public interface DocsMethods {
+    
+        @SourceFrom(path = "tutorial.html", selector = "#sample-add", addReturn = true)
+        void add(MathWizard mathWizard);
     }
-}
-```
+    ```
+3. create a test which may look like:
+    ```java
+    class DocsTest {
+        private DocsMethods docsMethods = Derrick.get(DocsMethods.class);
+    
+        private MathWizard mathWizard = new MathWizard();
+    
+        @Test
+        public void testAdd() {
+            assertEquals(docsMethods.add(mathWizard), 6);
+        }
+    }
+    ```
 
 That's all. Every time you build, Derrick will give you an up-to-date implementation of your interface by downloading the code from your docs, as long as the docs are accessible on the internet of course.
 
@@ -78,4 +78,4 @@ The included example tests this very tutorial. The code is taken from the sample
 
 [![Build Status](https://travis-ci.org/jakriz/derrick.svg?branch=master)](https://travis-ci.org/jakriz/derrick)
 
-[![codecov.io](https://codecov.io/github/jakriz/derrick.svg?branch=master)](https://codecov.io/github/jakriz/derrick.svg?branch=master)
+[![codecov.io](https://codecov.io/github/jakriz/derrick/coverage.svg?branch=master)](https://codecov.io/github/jakriz/derrick?branch=master)

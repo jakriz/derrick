@@ -84,7 +84,9 @@ List<String> addElement();
 
 ## Run the Included Example
 
-The included example tests this very tutorial. The code is taken from the sample usage section, `MathWizard.add()`.
+The included example tests this very tutorial. The code is taken from the two code samples, `MathWizard.add()` and adding an element to a list.
+
+To run the example:
 
 1. Clone the repo
 2. Run the example project `./gradlew example:run` or the example tests `./gradlew example:test`.

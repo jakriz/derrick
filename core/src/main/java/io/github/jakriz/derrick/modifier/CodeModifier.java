@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 public class CodeModifier {
     private static final String NL = System.lineSeparator();
     private static final String ASSIGNMENT = "^[^=]+=";
-    private static final Pattern TOP_LEVEL_METHOD_BEGIN = Pattern.compile("\\A\\s*[^ ]+ [^ ]+\\([^\\)]*\\) *\\{");
+    private static final Pattern TOP_LEVEL_METHOD_BEGIN = Pattern.compile("\\A\\s*([^ \\(\\)]+\\s+){1,3}[^ \\(\\)]+ *\\([^\\)]*\\) *\\{");
     private static final Pattern TOP_LEVEL_METHOD_END = Pattern.compile("\\}\\s*\\z");
 
     public String removeTopLevelMethod(String code) {

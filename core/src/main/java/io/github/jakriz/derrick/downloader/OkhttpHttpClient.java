@@ -10,7 +10,13 @@ import java.util.Optional;
 
 public class OkhttpHttpClient implements HttpClient {
 
-    private OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client;
+
+    public OkhttpHttpClient() {
+        this.client = new OkHttpClient.Builder()
+                .retryOnConnectionFailure(false)
+                .build();
+    }
 
     @Override
     public Optional<String> getHtml(String url, String path) {

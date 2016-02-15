@@ -4,7 +4,7 @@ import io.github.jakriz.derrick.annotation.DerrickInterface;
 import io.github.jakriz.derrick.annotation.SourceFrom;
 import io.github.jakriz.derrick.downloader.CodeDownloader;
 import io.github.jakriz.derrick.model.ProcessedMethod;
-import io.github.jakriz.derrick.processor.util.CodeModifier;
+import io.github.jakriz.derrick.modifier.CodeModifier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +24,7 @@ import java.util.Optional;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -57,12 +58,18 @@ public class MethodProcessorTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {true}, {false}
+                {true, empty()},
+                {false, empty()},
+                {true, of("a")},
+                {false, of("a")}
         });
     }
 
     @Parameterized.Parameter
-    public boolean addReturn;
+    public boolean returnLast;
+
+    @Parameterized.Parameter(value = 1)
+    public Optional<String> addReturn;
 
     @Before
     public void setUp() throws Exception {
@@ -75,7 +82,7 @@ public class MethodProcessorTest {
     public void testProcess_noCodeReturned() throws Exception {
         givenElementsHaveAnnotations();
         givenElementsReturnValues();
-        givenAnnotationsReturnValues(addReturn);
+        givenAnnotationsReturnValues(false, empty());
         givenCodeDownloaderDoesNotReturnCode();
 
         Optional<ProcessedMethod> result = victim.process(interfaceElement, methodElement);
@@ -87,13 +94,13 @@ public class MethodProcessorTest {
     public void testProcess_codeReturned() throws Exception {
         givenElementsHaveAnnotations();
         givenElementsReturnValues();
-        givenAnnotationsReturnValues(addReturn);
+        givenAnnotationsReturnValues(returnLast, addReturn);
         givenCodeDownloaderReturnsCode();
         givenCodeModifierReturnsCode();
 
         Optional<ProcessedMethod> result = victim.process(interfaceElement, methodElement);
 
-        thenCorrectCodeModifiersAreCalled(addReturn);
+        thenCorrectCodeModifiersAreCalled(returnLast, addReturn);
         thenResolvedMethodHasCorrectData(result.get());
     }
 
@@ -109,11 +116,12 @@ public class MethodProcessorTest {
         when(methodElement.getParameters()).thenReturn(Collections.emptyList());
     }
 
-    private void givenAnnotationsReturnValues(boolean addReturn) {
+    private void givenAnnotationsReturnValues(boolean returnLast, Optional<String> addReturn) {
         when(derrickInterface.baseUrl()).thenReturn("http://www.example.com");
         when(sourceFrom.path()).thenReturn("abc");
         when(sourceFrom.selector()).thenReturn(".xyz");
-        when(sourceFrom.addReturn()).thenReturn(addReturn);
+        when(sourceFrom.returnLast()).thenReturn(returnLast);
+        addReturn.ifPresent(ret -> when(sourceFrom.addReturn()).thenReturn(ret));
     }
 
     private void givenCodeDownloaderDoesNotReturnCode() {
@@ -126,19 +134,27 @@ public class MethodProcessorTest {
 
     private void givenCodeModifierReturnsCode() {
         when(codeModifier.removeTopLevelMethod(anyString())).thenReturn(CODE_SAMPLE);
-        when(codeModifier.changeToAddReturnOnLastLine(anyString())).thenReturn(CODE_SAMPLE);
+        when(codeModifier.changeToReturnLastLine(anyString())).thenReturn(CODE_SAMPLE);
+        when(codeModifier.changeToReturnSpecified(anyString(), anyString())).thenReturn(CODE_SAMPLE);
     }
 
     private void thenEmptyResultIsReturned(Optional<ProcessedMethod> result) {
         assertThat(result.isPresent()).isFalse();
     }
 
-    private void thenCorrectCodeModifiersAreCalled(boolean addReturn) {
+    private void thenCorrectCodeModifiersAreCalled(boolean returnLast, Optional<String> addReturn) {
         verify(codeModifier).removeTopLevelMethod(eq(CODE_SAMPLE));
-        if (addReturn) {
-            verify(codeModifier).changeToAddReturnOnLastLine(eq(CODE_SAMPLE));
+
+        if (returnLast) {
+            verify(codeModifier).changeToReturnLastLine(eq(CODE_SAMPLE));
         } else {
-            verify(codeModifier, never()).changeToAddReturnOnLastLine(anyString());
+            verify(codeModifier, never()).changeToReturnLastLine(anyString());
+        }
+
+        if (addReturn.isPresent()) {
+            verify(codeModifier).changeToReturnSpecified(eq(CODE_SAMPLE), eq(addReturn.get()));
+        } else {
+            verify(codeModifier, never()).changeToReturnSpecified(anyString(), anyString());
         }
     }
 

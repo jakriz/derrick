@@ -253,8 +253,13 @@ public class DerrickProcessorTest {
         }
 
         @Override
-        public boolean addReturn() {
+        public boolean returnLast() {
             return false;
+        }
+
+        @Override
+        public String addReturn() {
+            return "";
         }
 
         @Override

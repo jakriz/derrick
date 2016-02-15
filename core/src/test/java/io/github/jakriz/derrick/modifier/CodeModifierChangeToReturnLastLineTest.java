@@ -1,4 +1,4 @@
-package io.github.jakriz.derrick.processor.util;
+package io.github.jakriz.derrick.modifier;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +10,7 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
-public class CodeModifierChangeToAddReturnOnLastLineTest {
+public class CodeModifierChangeToReturnLastLineTest {
     private static final String NL = System.lineSeparator();
 
     private CodeModifier victim = new CodeModifier();
@@ -34,6 +34,6 @@ public class CodeModifierChangeToAddReturnOnLastLineTest {
 
     @Test
     public void test() throws Exception {
-        assertThat(victim.changeToAddReturnOnLastLine(original)).isEqualTo(modified);
+        assertThat(victim.changeToReturnLastLine(original)).isEqualTo(modified);
     }
 }

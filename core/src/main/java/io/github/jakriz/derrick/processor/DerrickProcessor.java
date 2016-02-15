@@ -9,7 +9,7 @@ import io.github.jakriz.derrick.generator.ClassGenerator;
 import io.github.jakriz.derrick.generator.HardcoreClassGenerator;
 import io.github.jakriz.derrick.model.ProcessedInterface;
 import io.github.jakriz.derrick.model.ProcessedMethod;
-import io.github.jakriz.derrick.processor.util.CodeModifier;
+import io.github.jakriz.derrick.modifier.CodeModifier;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;

@@ -9,7 +9,7 @@ The JavaDoc documentation is generated from your source code and is easy to take
 
 Derrick allows you to write integration/functional-type tests for the code samples you use in your documentation or tutorials. You can make them a part of your automated build or deployment process to make sure your docs are always correct and working with your latest release.
 
-## Sample usage
+## Sample Usage
 Say you have a library which implements some math operations. Your wiki may look something like:
 
 >To add a few numbers together you can use MathWizard.add() method, for example
@@ -25,8 +25,8 @@ To make sure this part of the documentation is correct you:
     ```java
     @DerrickInterface(baseUrl = "http://mathwizard.io", imports = {"io.mathwizard.*"})
     public interface DocsMethods {
-    
-        @SourceFrom(path = "tutorial.html", selector = "#sample-add", addReturn = true)
+
+        @SourceFrom(path = "tutorial.html", selector = "#sample-add", returnLast = true)
         void add(MathWizard mathWizard);
     }
     ```
@@ -34,9 +34,9 @@ To make sure this part of the documentation is correct you:
     ```java
     class DocsTest {
         private DocsMethods docsMethods = Derrick.get(DocsMethods.class);
-    
+
         private MathWizard mathWizard = new MathWizard();
-    
+
         @Test
         public void testAdd() {
             assertEquals(docsMethods.add(mathWizard), 6);
@@ -65,7 +65,22 @@ You need to specify a `path` to the page (which is embedded to the base url from
 
 The `selector` is a [CSS selector](http://www.w3schools.com/cssref/css_selectors.asp) which identifies the block with the code to be downloaded. Internally we use the [Jsoup HTML parser](http://jsoup.org/) to extract the element.
 
-The methods annotated with this annotation can also have parameters passed in but it is up to you to make sure they work with your code.
+The methods annotated with this annotation can also have parameters passed in, it is up to you to make sure they work with your code.
+
+To be able to test a code sample, Derrick provides you a few tricks. First off, since we only support method calls, Derrick removes any top level method you may have in your code sample leaving just the code which the method contained.
+
+You can specify additional options so that the interface method used for testing returns you the value you want tested.  You can set `returnLast` option to `true` makes the method return the last line of the code. If this line contains and assignment, the assigned value is returned. This option is meant mainly for testing one-liners and can be seen used in the example above.
+
+You can also set `addReturn` option to a string which will be added to the end of the code with a return statement. To illustrate this option, suppose you have a tutorial about working with Lists:
+<pre id="sample-list-add-element">
+List&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add(&quot;a&quot;);
+</pre>
+To test this piece of code, you can include a method in your interface such as:
+```java
+@SourceFrom(path = "list-tutorial.html", selector = "#sample-add-element", addReturn = "list")
+List<String> addElement();
+```
 
 ## Run the Included Example
 
@@ -76,4 +91,5 @@ The included example tests this very tutorial. The code is taken from the sample
 
 ## Code Status
 
-[![Build Status](https://travis-ci.org/jakriz/derrick.svg?branch=master)](https://travis-ci.org/jakriz/derrick) [![codecov.io](https://codecov.io/github/jakriz/derrick/coverage.svg?branch=master)](https://codecov.io/github/jakriz/derrick?branch=master)
+[![Build Status](https://travis-ci.org/jakriz/derrick.svg?branch=master)](https://travis-ci.org/jakriz/derrick)
+[![codecov.io](https://codecov.io/github/jakriz/derrick/coverage.svg?branch=master)](https://codecov.io/github/jakriz/derrick?branch=master)

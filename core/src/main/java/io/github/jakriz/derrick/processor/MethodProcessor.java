@@ -5,7 +5,7 @@ import io.github.jakriz.derrick.annotation.SourceFrom;
 import io.github.jakriz.derrick.downloader.CodeDownloader;
 import io.github.jakriz.derrick.model.Argument;
 import io.github.jakriz.derrick.model.ProcessedMethod;
-import io.github.jakriz.derrick.processor.util.CodeModifier;
+import io.github.jakriz.derrick.modifier.CodeModifier;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -29,8 +29,11 @@ public class MethodProcessor {
         Optional<String> code = codeDownloader.getMethodCode(interfaceAnnotation.baseUrl(), methodAnnotation.path(), methodAnnotation.selector());
         if (code.isPresent()) {
             String modifiedCode = codeModifier.removeTopLevelMethod(code.get());
-            if (methodAnnotation.addReturn()) {
-                modifiedCode = codeModifier.changeToAddReturnOnLastLine(modifiedCode);
+            if (methodAnnotation.returnLast()) {
+                modifiedCode = codeModifier.changeToReturnLastLine(modifiedCode);
+            }
+            if (methodAnnotation.addReturn() != null && !methodAnnotation.addReturn().isEmpty()) {
+                modifiedCode = codeModifier.changeToReturnSpecified(modifiedCode, methodAnnotation.addReturn());
             }
 
             ProcessedMethod processedMethod = new ProcessedMethod();

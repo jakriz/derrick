@@ -13,5 +13,7 @@ public @interface SourceFrom {
 
     String selector();
 
-    boolean addReturn() default false;
+    boolean returnLast() default false;
+
+    String addReturn() default "";
 }

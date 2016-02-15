@@ -73,8 +73,10 @@ You can specify additional options so that the interface method used for testing
 
 You can also set `addReturn` option to a string which will be added to the end of the code with a return statement. To illustrate this option, suppose you have a tutorial about working with Lists:
 <pre id="sample-list-add-element">
-List&lt;String&gt; list = new ArrayList&lt;&gt;();
-list.add(&quot;a&quot;);
+public List&lt;String&gt; createAndAdd() {
+  List&lt;String&gt; list = new ArrayList&lt;&gt;();
+  list.add(&quot;a&quot;);
+}
 </pre>
 To test this piece of code, you can include a method in your interface such as:
 ```java
@@ -89,7 +91,7 @@ The included example tests this very tutorial. The code is taken from the two co
 To run the example:
 
 1. Clone the repo
-2. Run the example project `./gradlew example:run` or the example tests `./gradlew example:test`.
+2. Run the example project `./gradlew example:run` or the example tests `./gradlew example:test`
 
 ## Code Status
 

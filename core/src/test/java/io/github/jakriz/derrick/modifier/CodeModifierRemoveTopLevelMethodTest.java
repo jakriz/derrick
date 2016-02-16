@@ -24,6 +24,7 @@ public class CodeModifierRemoveTopLevelMethodTest {
                 {"public void foo() {"+NL+"a = b();"+NL+"}", "a = b();"},
                 {"private void foo() {"+NL+"a = b();"+NL+"}", "a = b();"},
                 {"protected void foo() {"+NL+"a = b();"+NL+"}", "a = b();"},
+                {"@Override"+NL+"public void foo() {"+NL+"a = b();"+NL+"}", "a = b();"},
                 {"public static void foo() {"+NL+"a = b();"+NL+"}", "a = b();"},
                 {"List<String> foo() {"+NL+"a = b();"+NL+"}", "a = b();"},
                 {"List<String> foo(Map<String, List<Integer>> aMap) {"+NL+"a = b();"+NL+"}", "a = b();"},
@@ -35,6 +36,9 @@ public class CodeModifierRemoveTopLevelMethodTest {
                 {"void foo(Map<String, List<Integer>> aMap) {a = b(); c = d; return c;}", "a = b(); c = d; return c;"},
                 {"void foo() {"+NL+"if (2+2==4) {"+NL+"a = b();"+NL+"}"+NL+"}", "if (2+2==4) {"+NL+"a = b();"+NL+"}"},
                 {"void foo() {"+NL+"if (2+2==4) {a = b();}"+NL+"}", "if (2+2==4) {a = b();}"},
+                {"@Override"+NL+"public void foo() {"+NL+"while(true) {"+NL+"}"+NL+"}", "while(true) {"+NL+"}"},
+                {"@Override"+NL+"public void foo() {"+NL+"while (true) {"+NL+"}"+NL+"}", "while (true) {"+NL+"}"},
+                {"@Override"+NL+"public void foo() {"+NL+"for (int i = 0; i < 8; i++) {"+NL+"}"+NL+"}", "for (int i = 0; i < 8; i++) {"+NL+"}"},
         });
     }
 

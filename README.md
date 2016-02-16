@@ -21,7 +21,7 @@ Say you have a library which implements some math operations. Your wiki may look
 To make sure this part of the documentation is correct you:
 
 1. make sure that you can identify the code sample block with a CSS selector,
-2. create an interface which references the code in your documentation
+2. create an interface which references the code in your documentation using a url, path and a CSS selector
     ```java
     @DerrickInterface(baseUrl = "http://mathwizard.io", imports = {"io.mathwizard.*"})
     public interface DocsMethods {
@@ -47,6 +47,15 @@ To make sure this part of the documentation is correct you:
 That's all. Every time you build, Derrick will give you an up-to-date implementation of your interface by downloading the code from your docs, as long as the docs are accessible on the internet of course.
 
 You can add as many methods to your interface and create as many interfaces as you like. You can also pass in parameters, like we passed in the `MathWizard` object in the sample, or leave them out.
+
+## Run the Included Example
+
+The included example tests this very tutorial. The code is taken from the two code samples, `MathWizard.add()` and adding an element to a list.
+
+To run the example:
+
+1. Clone the repo
+2. Run the example project `./gradlew example:run` or the example tests `./gradlew example:test`
 
 ## Annotations and Options
 This section describes the annotations you have to use.
@@ -84,14 +93,9 @@ To test this piece of code, you can include a method in your interface such as:
 List<String> addElement();
 ```
 
-## Run the Included Example
+## Warning
 
-The included example tests this very tutorial. The code is taken from the two code samples, `MathWizard.add()` and adding an element to a list.
-
-To run the example:
-
-1. Clone the repo
-2. Run the example project `./gradlew example:run` or the example tests `./gradlew example:test`
+When you are using Derrick you are running code taken from the internet on your personal machine or, possibly worse, your CI server. Be careful, use HTTPS and do not use it for code which is publicly modifiable. The library is released under MIT license, without warranty of any kind.
 
 ## Code Status
 

@@ -49,6 +49,18 @@ To make sure this part of the documentation is correct you:
 
 That's all. Every time you build, Derrick will give you an up-to-date implementation of your interface by downloading the code from your docs, as long as the docs are accessible on the internet of course.
 
+The implementation class generated in this case will look like the following:
+
+```java
+import io.mathwizard.*;
+
+public class DocsMethodsDerrickImpl implements DocsMethods {
+    public int add(MathWizard mathWizard) {
+        return mathWizard.add(1, 2, 3);
+    }
+}
+```
+
 You can add as many methods to your interface and create as many interfaces as you like. You can also pass in parameters, like we passed in the `MathWizard` object in the sample, or leave them out.
 
 ## Run the Included Example
@@ -98,4 +110,6 @@ List<String> addElement();
 
 ## Warning
 
-When you use Derrick you run code taken from the internet on your personal machine or, possibly worse, your CI server. Be careful, use HTTPS and do not use it for code which is modifiable by your users. The project is released under MIT license, without warranty of any kind, use at your own discretion.
+When you use Derrick you run code taken from the internet on your personal machine or, possibly worse, your CI server. Be careful, use HTTPS and do not use it for code which is modifiable by your users.
+
+The project is released under [MIT license](https://tldrlegal.com/license/mit-license).

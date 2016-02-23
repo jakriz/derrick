@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'idea'
     id 'jacoco'
+    id 'maven'
+    id 'signing'
 }
 
 repositories {
@@ -10,14 +12,6 @@ repositories {
 
 sourceCompatibility = 1.8
 
-check.finalizedBy(jacocoTestReport)
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        csv.enabled true
-    }
-}
 
 dependencies {
     testCompile 'junit:junit:4.11'
@@ -29,4 +23,85 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.1.2'
     compile 'org.jsoup:jsoup:1.8.3'
     compile 'org.apache.commons:commons-lang3:3.4'
+}
+
+
+// jacoco code coverage
+check.finalizedBy(jacocoTestReport)
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled true
+    }
+}
+
+
+// releasing
+archivesBaseName = 'derrick'
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'Derrick'
+                packaging 'jar'
+                description 'Derrick, the documentation inspector, tests your high-level Java documentation and tutorials'
+                url 'https://github.com/jakriz/derrick'
+
+                scm {
+                    connection 'https://github.com/jakriz/derrick.git'
+                    developerConnection 'https://github.com/jakriz/derrick.git'
+                    url 'https://github.com/jakriz/derrick'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT'
+                        url 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'jakriz'
+                        name 'Jakub Kriz'
+                        email 'jacob.kriz@gmail.com'
+                    }
+                }
+            }
+        }
+    }
 }

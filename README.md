@@ -2,7 +2,6 @@
 [![codecov.io](https://codecov.io/github/jakriz/derrick/coverage.svg?branch=master)](https://codecov.io/github/jakriz/derrick?branch=master)
 
 # Derrick
-
 Derrick, the documentation inspector, enables you to test your high level Java documentation and tutorials. Make sure that the code samples you provide to your integrators are always correct and up-to-date!
 
 ## Motivation
@@ -108,8 +107,7 @@ To test this piece of code, you can include a method in your interface such as:
 List<String> addElement();
 ```
 
-## Warning
-
+## Warning and License
 When you use Derrick you run code taken from the internet on your personal machine or, possibly worse, your CI server. Be careful, use HTTPS and do not use it for code which is modifiable by your users.
 
 The project is released under [MIT license](https://tldrlegal.com/license/mit-license).

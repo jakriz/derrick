@@ -40,6 +40,10 @@ jacocoTestReport {
 // releasing
 archivesBaseName = 'derrick'
 
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
@@ -50,10 +54,6 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
-tasks.withType(Javadoc) {
-    options.addStringOption('Xdoclint:none', '-quiet')
-}
-
 artifacts {
     archives javadocJar, sourcesJar
 }
@@ -61,6 +61,7 @@ artifacts {
 signing {
     sign configurations.archives
 }
+assemble.dependsOn.remove(signing)
 
 uploadArchives {
     repositories {

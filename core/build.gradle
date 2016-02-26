@@ -61,7 +61,7 @@ artifacts {
 signing {
     sign configurations.archives
 }
-assemble.dependsOn.remove(signing)
+signArchives.enabled = project.hasProperty("signing.keyId")
 
 uploadArchives {
     repositories {
